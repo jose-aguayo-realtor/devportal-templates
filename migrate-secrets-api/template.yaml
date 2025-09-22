@@ -46,3 +46,10 @@ spec:
         organization: ${{ parameters.organization }}
         repository: ${{ parameters.repository }}
         dryRun: ${{ parameters.dryRun }}
+
+    # Print the output from the migration step
+    - id: print_migration_output
+      action: debug:log
+      name: Print Migration Results
+      input:
+        message: "Migration output: ${{ steps.call_migrate_endpoint.output.data }}"
