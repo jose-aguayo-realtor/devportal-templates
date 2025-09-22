@@ -48,8 +48,35 @@ spec:
         dryRun: ${{ parameters.dryRun }}
 
     # Print the output from the migration step
-    - id: print_migration_output
-      action: debug:log
-      name: Print Migration Results
+    - id: generate_migration_report
+      action: fetch:template
+      name: Generate Migration Report
       input:
-        message: "Migration output: ${{ steps.call_migrate_endpoint.output.data }}"
+        url: ./skeleton
+        values:
+          organization: ${{ parameters.organization }}
+          repository: ${{ parameters.repository }}
+          dryRun: ${{ parameters.dryRun }}
+
+    # Display the results to the user
+    - id: display_results
+      action: debug:log
+      name: Display Migration Results
+      input:
+        message: |
+          Migration completed! Results have been generated.
+          Check the migration-results.md file for detailed information.
+
+  output:
+    links:
+      - title: Migration Results
+        url: ${{ steps.generate_migration_report.output.targetDir }}/migration-results.md
+    text:
+      - title: Migration Summary
+        content: |
+          Migration for repository "{{ parameters.repository }}" in organization "{{ parameters.organization }}" has completed.
+          Dry run mode: {{ parameters.dryRun ? 'enabled' : 'disabled' }}
+          
+          Status: ${{ steps.call_migrate_endpoint.output.success ? 'SUCCESS' : 'FAILED' }}
+          
+          Check the generated report for detailed results.
