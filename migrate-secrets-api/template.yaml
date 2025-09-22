@@ -1,7 +1,7 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: migrate-secrets-api-1
+  name: migrate-secrets-api
   title: Migrate Secrets API
   description: Copies the secrets from HCP Vault to AWS Secrets Manager
   labels:
