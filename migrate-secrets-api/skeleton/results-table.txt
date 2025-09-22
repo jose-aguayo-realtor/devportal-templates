@@ -1,0 +1,42 @@
+================================================================
+                          MIGRATION RESULTS
+================================================================
+Repository:    {{ values.repository }}
+Organization:  {{ values.organization }}
+Dry Run:       {{ values.dryRun ? 'Yes' : 'No' }}
+Status:        {{ steps.call_migrate_endpoint.output.success ? '✅ SUCCESS' : '❌ FAILED' }}
+================================================================
+
+{% if steps.call_migrate_endpoint.output.data and steps.call_migrate_endpoint.output.data.length > 0 %}
+SECRETS MIGRATION DETAILS:
++-----------------------------+-----------------------------+-----------------------------+-----------------------------+
+|        SECRET NAME          |          SOURCE             |       DESTINATION           |          STATUS             |
++-----------------------------+-----------------------------+-----------------------------+-----------------------------+
+{% for item in steps.call_migrate_endpoint.output.data %}| {{ (item.name or 'N/A') | truncate(25) | ljust(27) }} | {{ (item.source or 'N/A') | truncate(25) | ljust(27) }} | {{ (item.destination or 'N/A') | truncate(25) | ljust(27) }} | {{ (item.status or 'Unknown') | truncate(25) | ljust(27) }} |
+{% endfor %}+-----------------------------+-----------------------------+-----------------------------+-----------------------------+
+{% else %}
+No migration data available.
+{% endif %}
+
+{% if steps.call_migrate_endpoint.output.message %}
+
+MESSAGE:
+--------
+{{ steps.call_migrate_endpoint.output.message }}
+{% endif %}
+
+{% if steps.call_migrate_endpoint.output.errors and steps.call_migrate_endpoint.output.errors.length > 0 %}
+
+ERRORS:
+-------
+{% for error in steps.call_migrate_endpoint.output.errors %}❌ {{ error.type }}: {{ error.message }}
+{% endfor %}{% endif %}
+
+{% if steps.call_migrate_endpoint.output.warnings and steps.call_migrate_endpoint.output.warnings.length > 0 %}
+
+WARNINGS:
+---------
+{% for warning in steps.call_migrate_endpoint.output.warnings %}⚠️  {{ warning.type }}: {{ warning.message }}
+{% endfor %}{% endif %}
+
+================================================================

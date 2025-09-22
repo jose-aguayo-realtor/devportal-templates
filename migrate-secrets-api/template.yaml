@@ -47,44 +47,21 @@ spec:
         repository: ${{ parameters.repository }}
         dryRun: ${{ parameters.dryRun }}
 
-    # Display migration results in formatted table
+    # Generate formatted results table using skeleton
+    - id: generate_results_table
+      action: fetch:template
+      name: Generate Results Table
+      input:
+        url: ./skeleton
+        values:
+          repository: ${{ parameters.repository }}
+          organization: ${{ parameters.organization }}
+          dryRun: ${{ parameters.dryRun }}
+
+    # Display the formatted table
     - id: display_migration_table
       action: debug:log
-      name: Display Migration Results Table
+      name: Display Migration Results
       input:
-        message: |
-          
-          ================================================================
-                                MIGRATION RESULTS
-          ================================================================
-          Repository:    ${{ parameters.repository }}
-          Organization:  ${{ parameters.organization }}
-          Dry Run:       ${{ parameters.dryRun ? 'Yes' : 'No' }}
-          Status:        ${{ steps.call_migrate_endpoint.output.success ? '✅ SUCCESS' : '❌ FAILED' }}
-          ================================================================
-          
-
-          
-          {% if steps.call_migrate_endpoint.output.message %}
-          
-          MESSAGE:
-          --------
-          ${{ steps.call_migrate_endpoint.output.message }}
-          {% endif %}
-          
-          {% if steps.call_migrate_endpoint.output.errors and steps.call_migrate_endpoint.output.errors.length > 0 %}
-          
-          ERRORS:
-          -------
-          {% for error in steps.call_migrate_endpoint.output.errors %}❌ {{ error.type }}: {{ error.message }}
-          {% endfor %}{% endif %}
-          
-          {% if steps.call_migrate_endpoint.output.warnings and steps.call_migrate_endpoint.output.warnings.length > 0 %}
-          
-          WARNINGS:
-          ---------
-          {% for warning in steps.call_migrate_endpoint.output.warnings %}⚠️  {{ warning.type }}: {{ warning.message }}
-          {% endfor %}{% endif %}
-          
-          ================================================================
+        message: ${{ steps.generate_results_table.output.content['results-table.txt'] }}
 
