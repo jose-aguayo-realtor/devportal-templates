@@ -47,36 +47,44 @@ spec:
         repository: ${{ parameters.repository }}
         dryRun: ${{ parameters.dryRun }}
 
-    # Print the output from the migration step
-    - id: generate_migration_report
-      action: fetch:template
-      name: Generate Migration Report
-      input:
-        url: ./skeleton
-        values:
-          organization: ${{ parameters.organization }}
-          repository: ${{ parameters.repository }}
-          dryRun: ${{ parameters.dryRun }}
-
-    # Display the results to the user
-    - id: display_results
+    # Display migration results in formatted table
+    - id: display_migration_table
       action: debug:log
-      name: Display Migration Results
+      name: Display Migration Results Table
       input:
         message: |
-          Migration completed! Results have been generated.
-          Check the migration-results.md file for detailed information.
+          
+          ================================================================
+                                MIGRATION RESULTS
+          ================================================================
+          Repository:    ${{ parameters.repository }}
+          Organization:  ${{ parameters.organization }}
+          Dry Run:       ${{ parameters.dryRun ? 'Yes' : 'No' }}
+          Status:        ${{ steps.call_migrate_endpoint.output.success ? '✅ SUCCESS' : '❌ FAILED' }}
+          ================================================================
+          
 
-  output:
-    links:
-      - title: Migration Results
-        url: ${{ steps.generate_migration_report.output.targetDir }}/migration-results.md
-    text:
-      - title: Migration Summary
-        content: |
-          Migration for repository "{{ parameters.repository }}" in organization "{{ parameters.organization }}" has completed.
-          Dry run mode: {{ parameters.dryRun ? 'enabled' : 'disabled' }}
           
-          Status: ${{ steps.call_migrate_endpoint.output.success ? 'SUCCESS' : 'FAILED' }}
+          {% if steps.call_migrate_endpoint.output.message %}
           
-          Check the generated report for detailed results.
+          MESSAGE:
+          --------
+          ${{ steps.call_migrate_endpoint.output.message }}
+          {% endif %}
+          
+          {% if steps.call_migrate_endpoint.output.errors and steps.call_migrate_endpoint.output.errors.length > 0 %}
+          
+          ERRORS:
+          -------
+          {% for error in steps.call_migrate_endpoint.output.errors %}❌ {{ error.type }}: {{ error.message }}
+          {% endfor %}{% endif %}
+          
+          {% if steps.call_migrate_endpoint.output.warnings and steps.call_migrate_endpoint.output.warnings.length > 0 %}
+          
+          WARNINGS:
+          ---------
+          {% for warning in steps.call_migrate_endpoint.output.warnings %}⚠️  {{ warning.type }}: {{ warning.message }}
+          {% endfor %}{% endif %}
+          
+          ================================================================
+
