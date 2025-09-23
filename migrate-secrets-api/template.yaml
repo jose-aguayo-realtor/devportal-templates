@@ -63,7 +63,7 @@ spec:
 
           Secrets found: ${{ steps.call_migrate_endpoint.output.data.data.dev.secrets_found }}
 
-          Secrets: 
+          Secrets: ${{ steps.call_migrate_endpoint.output.data.data.dev.secret_keys }}
 
       - title: Raw Output
         content: ${{ steps.call_migrate_endpoint.output | dump }}
