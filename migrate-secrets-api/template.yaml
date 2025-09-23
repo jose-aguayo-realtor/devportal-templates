@@ -54,7 +54,7 @@ spec:
     text:      
       - title: Migration Summary
         content: |
-          ${{ steps.call_migrate_endpoint.output.table }}
+          ${{ steps.call_migrate_endpoint.output.migrationSummary }}
 
       - title: Raw Output
         content: ${{ steps.call_migrate_endpoint.output | dump }}
