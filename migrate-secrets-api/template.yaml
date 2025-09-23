@@ -53,7 +53,7 @@ spec:
         content: |
           Repository: ${{ parameters.repository }}
           Organization: ${{ parameters.organization }}
-          Dry Run: ${{ parameters.dryRun ? 'Yes' : 'No' }}
+          ${{ parameters.dryRun }}
           Status: ${{ steps.call_migrate_endpoint.output.data.status }}
           Request ID: ${{ steps.call_migrate_endpoint.output.data.request_id }}
           HTTP Code: ${{ steps.call_migrate_endpoint.output.code }}
