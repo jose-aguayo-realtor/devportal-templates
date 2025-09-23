@@ -1,0 +1,39 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component  # https://backstage.io/docs/features/software-catalog/descriptor-format
+metadata:
+  name: cicd-sentinel
+  description: Helps domain teams to manage their AWS Secrets Manager resources
+  title: Sentinel
+  annotations:
+    argocd/app-name: cicd-sentinel-app
+    backstage.io/techdocs-ref: dir:.
+    circleci.com/project-slug: github/MoveRDC/cicd-sentinel
+    github.com/project-slug: MoveRDC/cicd-sentinel
+    github.com/team-slug: MoveRDC/devops
+    newscorp.com/company: move
+    newscorp.com/business: realtor
+    opsgenie.com/team: "move_devops"
+    realtor.com/aws-account: "move-infrastructure-cicd"
+    sonarqube.org/project-key: "MoveRDC.cicd-sentinel"
+
+  links:
+    - title: Jira Home
+      url: https://moveinc.atlassian.net/jira/software/c/projects/CICD/boards/1102
+    - title: "JIRA Support Form"
+      url: "https://moveinc.atlassian.net/jira/software/c/projects/CICD/forms/form/direct/8574509341949582/10083"
+    - title: Slack Channel
+      url: https://moveinc.slack.com/archives/C028J53TJ4A
+  tags:
+    - aws
+    - secrets-manager
+    - skyway
+spec:
+  lifecycle: production
+  type: service
+  owner: "group:default/skyway"
+  system: "system:default/skyway"
+  dependsOn:
+    - component:default/github-cloud
+    - component:default/developer-portal-web
+    - component:default/circleci-orb-move-ci

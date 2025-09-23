@@ -1,9 +1,10 @@
+---
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: migrate-secrets
-  title: Migrate Secrets
-  description: Copies the secrets from HCP Vault to AWS Secrets Manager
+  title: Migrate Secrets from HCP Vault to AWS Secrets Manager
+  description: Migrate secret keys and values from HCP Vault to AWS Secrets Manager across all environments
   labels:
     realtor.com/version: 1.0.0
 spec:
@@ -18,13 +19,15 @@ spec:
         # Info
         Copies the values of a secret from Vault to AWS Secrets Manager.
       required:
+        #- organization
         - repository
       properties:
-        organization:
-          title: Organization Name
-          type: string
-          description: |
-            Github Organization where the repository is stored.
+        #organization:
+        #  title: Organization Name
+        #  type: string
+        #  description: |
+        #    Github Organization where the repository is stored.
+        #  default: MoveRDC
         repository:
           title: Repository Name
           type: string
@@ -36,23 +39,23 @@ spec:
           title: Perform a dry run to preview what will be migrated.
           type: boolean
           default: true
-        skywayBaseUrl:
-          title: Specify the Skyway base URL you want to use.
-          type: string
-          default: "http://sentinel.cicd-prod.moveaws.com"
+        #skywayBaseUrl:
+        #  title: Skyway Base URL. Only used by Skyway team for testing purposes
+        #  type: string
+        #  default: "http://sentinel.cicd-prod.moveaws.com"
 
   steps:
     - id: call_migrate_endpoint
       action: skyway:migrate-endpoint
       name: Migrating secrets from Vault to AWS Secrets Manager
       input:
-        organization: ${{ parameters.organization }}
+        #organization: ${{ parameters.organization }}
         repository: ${{ parameters.repository }}
         dryRun: ${{ parameters.dryRun }}
-        skywayBaseUrl: ${{ parameters.skywayBaseUrl }}
+        #skywayBaseUrl: ${{ parameters.skywayBaseUrl }}
 
   output:
-    text:      
+    text:
       - title: Migration Summary
         content: |
           ${{ steps.call_migrate_endpoint.output.migrationSummary }}
