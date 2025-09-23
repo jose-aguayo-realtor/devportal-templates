@@ -47,14 +47,64 @@ spec:
         repository: ${{ parameters.repository }}
         dryRun: ${{ parameters.dryRun }}
 
-    # Display the formatted table
-    - id: display_migration_table
-      action: debug:log
-      name: Display Migration Results
-      input:
-        message: ${{ steps.generate_results_table.output.content['results-table.txt'] }}
-
   output:
     text:
-      - title: "✅ Secrets to be migrated"
-        description: ${{ steps.call_migrate_endpoint.output | dump }}
+      - title: Migration Summary
+        content: |
+          **Repository:** ${{ parameters.repository }}
+          **Organization:** ${{ parameters.organization }}
+          **Dry Run:** ${{ parameters.dryRun ? 'Yes' : 'No' }}
+          **Status:** ${{ steps.call_migrate_endpoint.output.status }}
+          **Request ID:** ${{ steps.call_migrate_endpoint.output.request_id }}
+
+      - title: Migration Message
+        content: |
+          ${{ steps.call_migrate_endpoint.output.message }}
+
+      - title: Environment Results
+        content: |
+          ## Development Environment
+          **Vault Environment:** ${{ steps.call_migrate_endpoint.output.data.dev.vault_env }}
+          **Secrets Found:** ${{ steps.call_migrate_endpoint.output.data.dev.secrets_found }}
+          **Copied:** ${{ steps.call_migrate_endpoint.output.data.dev.copied ? 'Yes' : 'No' }}
+          ${{ steps.call_migrate_endpoint.output.data.dev.error ? '**Error:** ' + steps.call_migrate_endpoint.output.data.dev.error : '' }}
+          ${{ steps.call_migrate_endpoint.output.data.dev.secret_keys ? '**Secret Keys:** ' + steps.call_migrate_endpoint.output.data.dev.secret_keys.join(', ') : '' }}
+
+          ## Staging Environment  
+          **Vault Environment:** ${{ steps.call_migrate_endpoint.output.data.stag.vault_env }}
+          **Secrets Found:** ${{ steps.call_migrate_endpoint.output.data.stag.secrets_found }}
+          **Copied:** ${{ steps.call_migrate_endpoint.output.data.stag.copied ? 'Yes' : 'No' }}
+          ${{ steps.call_migrate_endpoint.output.data.stag.error ? '**Error:** ' + steps.call_migrate_endpoint.output.data.stag.error : '' }}
+          ${{ steps.call_migrate_endpoint.output.data.stag.message ? '**Message:** ' + steps.call_migrate_endpoint.output.data.stag.message : '' }}
+          ${{ steps.call_migrate_endpoint.output.data.stag.secret_keys ? '**Secret Keys:** ' + steps.call_migrate_endpoint.output.data.stag.secret_keys.join(', ') : '' }}
+
+          ## Production Environment
+          **Vault Environment:** ${{ steps.call_migrate_endpoint.output.data.prod.vault_env }}  
+          **Secrets Found:** ${{ steps.call_migrate_endpoint.output.data.prod.secrets_found }}
+          **Copied:** ${{ steps.call_migrate_endpoint.output.data.prod.copied ? 'Yes' : 'No' }}
+          ${{ steps.call_migrate_endpoint.output.data.prod.error ? '**Error:** ' + steps.call_migrate_endpoint.output.data.prod.error : '' }}
+          ${{ steps.call_migrate_endpoint.output.data.prod.secret_keys ? '**Secret Keys:** ' + steps.call_migrate_endpoint.output.data.prod.secret_keys.join(', ') : '' }}
+
+      - title: Secrets Summary Table
+        content: |
+          | Environment | Vault Env | Secrets Found | Copied | Status |
+          |-------------|-----------|---------------|---------|--------|
+          | Dev | ${{ steps.call_migrate_endpoint.output.data.dev.vault_env }} | ${{ steps.call_migrate_endpoint.output.data.dev.secrets_found }} | ${{ steps.call_migrate_endpoint.output.data.dev.copied ? 'Yes' : 'No' }} | ${{ steps.call_migrate_endpoint.output.data.dev.error ? '❌ Error' : '✅ OK' }} |
+          | Staging | ${{ steps.call_migrate_endpoint.output.data.stag.vault_env }} | ${{ steps.call_migrate_endpoint.output.data.stag.secrets_found }} | ${{ steps.call_migrate_endpoint.output.data.stag.copied ? 'Yes' : 'No' }} | ${{ steps.call_migrate_endpoint.output.data.stag.error ? '❌ Error' : (steps.call_migrate_endpoint.output.data.stag.secrets_found > 0 ? '✅ OK' : '⚠️ No Secrets') }} |
+          | Production | ${{ steps.call_migrate_endpoint.output.data.prod.vault_env }} | ${{ steps.call_migrate_endpoint.output.data.prod.secrets_found }} | ${{ steps.call_migrate_endpoint.output.data.prod.copied ? 'Yes' : 'No' }} | ${{ steps.call_migrate_endpoint.output.data.prod.error ? '❌ Error' : '✅ OK' }} |
+
+      - title: Error Details
+        content: |
+          ${{ steps.call_migrate_endpoint.output.data.dev.error ? '**Dev Error:** ' + steps.call_migrate_endpoint.output.data.dev.error : '' }}
+          
+          ${{ steps.call_migrate_endpoint.output.data.stag.error ? '**Staging Error:** ' + steps.call_migrate_endpoint.output.data.stag.error : '' }}
+          
+          ${{ steps.call_migrate_endpoint.output.data.prod.error ? '**Production Error:** ' + steps.call_migrate_endpoint.output.data.prod.error : '' }}
+          
+          ${{ (!steps.call_migrate_endpoint.output.data.dev.error && !steps.call_migrate_endpoint.output.data.stag.error && !steps.call_migrate_endpoint.output.data.prod.error) ? 'No errors reported.' : '' }}
+
+      - title: Complete Output (Debug)
+        content: |
+          ```json
+          ${{ steps.call_migrate_endpoint.output | dump }}
+          ```
