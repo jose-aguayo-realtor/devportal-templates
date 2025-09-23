@@ -39,6 +39,7 @@ spec:
         skywayBaseUrl:
           title: Specify the Skyway base URL you want to use.
           type: string
+          default: "http://sentinel.cicd-prod.moveaws.com"
 
   steps:
     - id: call_migrate_endpoint
