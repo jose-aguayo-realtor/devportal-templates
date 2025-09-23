@@ -50,7 +50,7 @@ spec:
   output:
     text:
       - title: "✅ Tagging process has been initiated."
-        description: ${{ parameters.repository }}
+        description: "${{ parameters.repository }}"
         
       - title: Migration Summary
         content: |
