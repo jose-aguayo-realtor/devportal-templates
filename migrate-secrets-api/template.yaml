@@ -48,10 +48,7 @@ spec:
         dryRun: ${{ parameters.dryRun }}
 
   output:
-    text:
-      - title: "✅ Tagging process has been initiated."
-        description: "${{ parameters.repository }}"
-        
+    text:      
       - title: Migration Summary
         content: |
           Repository: ${{ parameters.repository }}
@@ -64,30 +61,35 @@ spec:
       - title: Migration Message
         content: ${{ steps.call_migrate_endpoint.output.data.message }}
 
-      - title: Development Environment
-        content: |
-          Vault Environment: ${{ steps.call_migrate_endpoint.output.data.data.dev.vault_env }}
-          Secrets Found: ${{ steps.call_migrate_endpoint.output.data.data.dev.secrets_found }}
-          Copied: ${{ steps.call_migrate_endpoint.output.data.data.dev.copied ? 'Yes' : 'No' }}
-          Secret Keys: ${{ steps.call_migrate_endpoint.output.data.data.dev.secret_keys ? steps.call_migrate_endpoint.output.data.data.dev.secret_keys.join(', ') : 'None' }}
-          Error: ${{ steps.call_migrate_endpoint.output.data.data.dev.error || 'None' }}
+      - title: Development Environment - Vault
+        content: ${{ steps.call_migrate_endpoint.output.data.data.dev.vault_env }}
 
-      - title: Staging Environment
-        content: |
-          Vault Environment: ${{ steps.call_migrate_endpoint.output.data.data.stag.vault_env }}
-          Secrets Found: ${{ steps.call_migrate_endpoint.output.data.data.stag.secrets_found }}
-          Copied: ${{ steps.call_migrate_endpoint.output.data.data.stag.copied ? 'Yes' : 'No' }}
-          Message: ${{ steps.call_migrate_endpoint.output.data.data.stag.message || 'None' }}
-          Secret Keys: ${{ steps.call_migrate_endpoint.output.data.data.stag.secret_keys ? steps.call_migrate_endpoint.output.data.data.stag.secret_keys.join(', ') : 'None' }}
-          Error: ${{ steps.call_migrate_endpoint.output.data.data.stag.error || 'None' }}
+      - title: Development Environment - Secrets Found
+        content: ${{ steps.call_migrate_endpoint.output.data.data.dev.secrets_found }}
 
-      - title: Production Environment
-        content: |
-          Vault Environment: ${{ steps.call_migrate_endpoint.output.data.data.prod.vault_env }}
-          Secrets Found: ${{ steps.call_migrate_endpoint.output.data.data.prod.secrets_found }}
-          Copied: ${{ steps.call_migrate_endpoint.output.data.data.prod.copied ? 'Yes' : 'No' }}
-          Secret Keys: ${{ steps.call_migrate_endpoint.output.data.data.prod.secret_keys ? steps.call_migrate_endpoint.output.data.data.prod.secret_keys.join(', ') : 'None' }}
-          Error: ${{ steps.call_migrate_endpoint.output.data.data.prod.error || 'None' }}
+      - title: Development Environment - Copied
+        content: ${{ steps.call_migrate_endpoint.output.data.data.dev.copied }}
+
+      - title: Development Environment - Error  
+        content: ${{ steps.call_migrate_endpoint.output.data.data.dev.error }}
+
+      - title: Staging Environment - Vault
+        content: ${{ steps.call_migrate_endpoint.output.data.data.stag.vault_env }}
+
+      - title: Staging Environment - Secrets Found
+        content: ${{ steps.call_migrate_endpoint.output.data.data.stag.secrets_found }}
+
+      - title: Staging Environment - Message
+        content: ${{ steps.call_migrate_endpoint.output.data.data.stag.message || 'None' }}
+
+      - title: Production Environment - Vault
+        content: ${{ steps.call_migrate_endpoint.output.data.data.prod.vault_env }}
+
+      - title: Production Environment - Secrets Found
+        content: ${{ steps.call_migrate_endpoint.output.data.data.prod.secrets_found }}
+
+      - title: Production Environment - Error
+        content: ${{ steps.call_migrate_endpoint.output.data.data.prod.error || 'None' }}
 
       - title: Raw Output
         content: ${{ steps.call_migrate_endpoint.output | dump }}
