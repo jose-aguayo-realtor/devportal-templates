@@ -55,34 +55,36 @@ spec:
           Organization: ${{ parameters.organization }}
           Dry Run: ${{ parameters.dryRun ? 'Yes' : 'No' }}
           Status: ${{ steps.call_migrate_endpoint.output.data.status }}
+          Request ID: ${{ steps.call_migrate_endpoint.output.data.request_id }}
+          HTTP Code: ${{ steps.call_migrate_endpoint.output.code }}
 
       - title: Migration Message
         content: ${{ steps.call_migrate_endpoint.output.data.message }}
 
       - title: Development Environment
         content: |
-          Vault Environment: ${{ steps.call_migrate_endpoint.output.data.dev.vault_env }}
-          Secrets Found: ${{ steps.call_migrate_endpoint.output.data.dev.secrets_found }}
-          Copied: ${{ steps.call_migrate_endpoint.output.data.dev.copied ? 'Yes' : 'No' }}
-          Secret Keys: ${{ steps.call_migrate_endpoint.output.data.dev.secret_keys ? steps.call_migrate_endpoint.output.data.dev.secret_keys.join(', ') : 'None' }}
-          Error: ${{ steps.call_migrate_endpoint.output.data.dev.error || 'None' }}
+          Vault Environment: ${{ steps.call_migrate_endpoint.output.data.data.dev.vault_env }}
+          Secrets Found: ${{ steps.call_migrate_endpoint.output.data.data.dev.secrets_found }}
+          Copied: ${{ steps.call_migrate_endpoint.output.data.data.dev.copied ? 'Yes' : 'No' }}
+          Secret Keys: ${{ steps.call_migrate_endpoint.output.data.data.dev.secret_keys ? steps.call_migrate_endpoint.output.data.data.dev.secret_keys.join(', ') : 'None' }}
+          Error: ${{ steps.call_migrate_endpoint.output.data.data.dev.error || 'None' }}
 
       - title: Staging Environment
         content: |
-          Vault Environment: ${{ steps.call_migrate_endpoint.output.data.stag.vault_env }}
-          Secrets Found: ${{ steps.call_migrate_endpoint.output.data.stag.secrets_found }}
-          Copied: ${{ steps.call_migrate_endpoint.output.data.stag.copied ? 'Yes' : 'No' }}
-          Message: ${{ steps.call_migrate_endpoint.output.data.stag.message || 'None' }}
-          Secret Keys: ${{ steps.call_migrate_endpoint.output.data.stag.secret_keys ? steps.call_migrate_endpoint.output.data.stag.secret_keys.join(', ') : 'None' }}
-          Error: ${{ steps.call_migrate_endpoint.output.data.stag.error || 'None' }}
+          Vault Environment: ${{ steps.call_migrate_endpoint.output.data.data.stag.vault_env }}
+          Secrets Found: ${{ steps.call_migrate_endpoint.output.data.data.stag.secrets_found }}
+          Copied: ${{ steps.call_migrate_endpoint.output.data.data.stag.copied ? 'Yes' : 'No' }}
+          Message: ${{ steps.call_migrate_endpoint.output.data.data.stag.message || 'None' }}
+          Secret Keys: ${{ steps.call_migrate_endpoint.output.data.data.stag.secret_keys ? steps.call_migrate_endpoint.output.data.data.stag.secret_keys.join(', ') : 'None' }}
+          Error: ${{ steps.call_migrate_endpoint.output.data.data.stag.error || 'None' }}
 
       - title: Production Environment
         content: |
-          Vault Environment: ${{ steps.call_migrate_endpoint.output.data.prod.vault_env }}
-          Secrets Found: ${{ steps.call_migrate_endpoint.output.data.prod.secrets_found }}
-          Copied: ${{ steps.call_migrate_endpoint.output.data.prod.copied ? 'Yes' : 'No' }}
-          Secret Keys: ${{ steps.call_migrate_endpoint.output.data.prod.secret_keys ? steps.call_migrate_endpoint.output.data.prod.secret_keys.join(', ') : 'None' }}
-          Error: ${{ steps.call_migrate_endpoint.output.data.prod.error || 'None' }}
+          Vault Environment: ${{ steps.call_migrate_endpoint.output.data.data.prod.vault_env }}
+          Secrets Found: ${{ steps.call_migrate_endpoint.output.data.data.prod.secrets_found }}
+          Copied: ${{ steps.call_migrate_endpoint.output.data.data.prod.copied ? 'Yes' : 'No' }}
+          Secret Keys: ${{ steps.call_migrate_endpoint.output.data.data.prod.secret_keys ? steps.call_migrate_endpoint.output.data.data.prod.secret_keys.join(', ') : 'None' }}
+          Error: ${{ steps.call_migrate_endpoint.output.data.data.prod.error || 'None' }}
 
       - title: Raw Output
         content: ${{ steps.call_migrate_endpoint.output | dump }}
