@@ -47,21 +47,49 @@ spec:
         repository: ${{ parameters.repository }}
         dryRun: ${{ parameters.dryRun }}
 
-    # Generate comprehensive migration report
-    - id: generate_summary_report
-      action: fetch:template
-      name: Generate Migration Summary Report
-      input:
-        url: ./skeleton
-        values:
-          repository: ${{ parameters.repository }}
-          organization: ${{ parameters.organization }}
-          dryRun: ${{ parameters.dryRun }}
-
   output:
     text:      
       - title: Migration Summary
-        content: ${{ steps.generate_summary_report.output.content['migration-summary.md'] }}
+        content: |
+          ### Repository: ${{ parameters.repository }}
+          Organization: ${{ parameters.organization }}
+          ${{ parameters.dryRun }}
+          Status: ${{ steps.call_migrate_endpoint.output.data.status }}
+          Request ID: ${{ steps.call_migrate_endpoint.output.data.request_id }}
+          HTTP Code: ${{ steps.call_migrate_endpoint.output.code }}
 
-      - title: Raw Output (Debug)
-        content: ${{ '```json\n' + (steps.call_migrate_endpoint.output | dump) + '\n```' }}
+      - title: Migration Message
+        content: ${{ steps.call_migrate_endpoint.output.data.message }}
+
+      - title: Development Environment - Vault
+        content: ${{ steps.call_migrate_endpoint.output.data.data.dev.vault_env }}
+
+      - title: Development Environment - Secrets Found
+        content: ${{ steps.call_migrate_endpoint.output.data.data.dev.secrets_found }}
+
+      - title: Development Environment - Copied
+        content: ${{ steps.call_migrate_endpoint.output.data.data.dev.copied }}
+
+      - title: Development Environment - Error  
+        content: ${{ steps.call_migrate_endpoint.output.data.data.dev.error }}
+
+      - title: Staging Environment - Vault
+        content: ${{ steps.call_migrate_endpoint.output.data.data.stag.vault_env }}
+
+      - title: Staging Environment - Secrets Found
+        content: ${{ steps.call_migrate_endpoint.output.data.data.stag.secrets_found }}
+
+      - title: Staging Environment - Message
+        content: ${{ steps.call_migrate_endpoint.output.data.data.stag.message || 'None' }}
+
+      - title: Production Environment - Vault
+        content: ${{ steps.call_migrate_endpoint.output.data.data.prod.vault_env }}
+
+      - title: Production Environment - Secrets Found
+        content: ${{ steps.call_migrate_endpoint.output.data.data.prod.secrets_found }}
+
+      - title: Production Environment - Error
+        content: ${{ steps.call_migrate_endpoint.output.data.data.prod.error || 'None' }}
+
+      - title: Raw Output
+        content: ${{ steps.call_migrate_endpoint.output | dump }}
