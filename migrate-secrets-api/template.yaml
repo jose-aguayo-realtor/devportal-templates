@@ -1,8 +1,8 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: migrate-secrets-api-1
-  title: Migrate Secrets API 2
+  name: migrate-secrets-api
+  title: Migrate Secrets API
   description: Copies the secrets from HCP Vault to AWS Secrets Manager
   labels:
     realtor.com/version: 1.0.0
@@ -36,16 +36,19 @@ spec:
           title: Perform a Dry Run to simulate a migration of secrets.
           type: boolean
           default: true
+        skywayBaseUrl:
+          title: Specify the Skyway base URL you want to use.
+          type: string
 
   steps:
-  # Fetch defaultRead entities
     - id: call_migrate_endpoint
       action: skyway:migrate-endpoint
-      name: Fetch all Selected Entities in defaultRead
+      name: Migrating secrets from Vault to AWS Secrets Manager
       input:
         organization: ${{ parameters.organization }}
         repository: ${{ parameters.repository }}
         dryRun: ${{ parameters.dryRun }}
+        skywayBaseUrl: ${{ parameters.skywayBaseUrl }}
 
   output:
     text:      
