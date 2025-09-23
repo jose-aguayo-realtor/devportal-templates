@@ -51,27 +51,7 @@ spec:
     text:      
       - title: Migration Summary
         content: |
-          Repository: ${{ parameters.organization }} / ${{ parameters.repository }}
-          
-          Dry-run: ${{ parameters.dryRun }}
-          
-          Status: ${{ steps.call_migrate_endpoint.output.data.status }}
-          
-          ## ${{ steps.call_migrate_endpoint.output.data.message }}
-
-          ### Env: ${{ steps.call_migrate_endpoint.output.data.data.dev.vault_env }}
-
-          **Secrets found:** ${{ steps.call_migrate_endpoint.output.data.data.dev.secrets_found }}
-
-          Secrets: 
-          
           ${{ steps.call_migrate_endpoint.output.table }}
-
-          | id | name | role |
-          |---|---|---|
-          | 1 | Alice | Admin |
-          | 2 | Bob | Developer |
-          | 3 | Charlie | Designer |
 
       - title: Raw Output
         content: ${{ steps.call_migrate_endpoint.output | dump }}
