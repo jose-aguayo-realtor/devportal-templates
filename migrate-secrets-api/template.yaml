@@ -61,7 +61,7 @@ spec:
 
           ### Env: ${{ steps.call_migrate_endpoint.output.data.data.dev.vault_env }}
 
-          Secrets found: ${{ steps.call_migrate_endpoint.output.data.data.dev.secrets_found }}
+          **Secrets found:** ${{ steps.call_migrate_endpoint.output.data.data.dev.secrets_found }}
 
           Secrets: ${{ steps.call_migrate_endpoint.output.data.data.dev.secret_keys }}
 
