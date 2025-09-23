@@ -47,17 +47,6 @@ spec:
         repository: ${{ parameters.repository }}
         dryRun: ${{ parameters.dryRun }}
 
-    # Generate formatted results table using skeleton
-    - id: generate_results_table
-      action: fetch:template
-      name: Generate Results Table
-      input:
-        url: ./skeleton
-        values:
-          repository: ${{ parameters.repository }}
-          organization: ${{ parameters.organization }}
-          dryRun: ${{ parameters.dryRun }}
-
     # Display the formatted table
     - id: display_migration_table
       action: debug:log
@@ -65,3 +54,7 @@ spec:
       input:
         message: ${{ steps.generate_results_table.output.content['results-table.txt'] }}
 
+  output:
+    text:
+      - title: "✅ Secrets to be migrated"
+        description: ${{ steps.call_migrate_endpoint.output | dump }}
