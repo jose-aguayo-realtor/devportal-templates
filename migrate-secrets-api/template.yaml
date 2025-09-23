@@ -65,7 +65,7 @@ spec:
         content: ${{ steps.call_migrate_endpoint.output.data.data.dev.vault_env }}
 
       - title: Development Environment - Secrets Found
-        content: ${{ steps.call_migrate_endpoint.output.data.data.dev.secrets_found }}
+        content: ${{ steps.call_migrate_endpoint.output.data.data.dev.secret_keys }}
 
       - title: Development Environment - Copied
         content: ${{ steps.call_migrate_endpoint.output.data.data.dev.copied }}
